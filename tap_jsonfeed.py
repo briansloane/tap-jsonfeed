@@ -62,6 +62,13 @@ def do_sync(config, state):
     state = get_feed(feed_url, state)
     singer.write_state(state)
 
+def do_discover():
+    logger.info("Starting discover")
+    streams = []
+    streams.append({'stream': 'feed', 'tap_stream_id': 'feed', 'schema': load_schemas()})
+    json.dump({'streams': streams}, sys.stdout, indent=2)
+    logger.info("Finished discover")
+
 
 def main():
 
@@ -71,6 +78,8 @@ def main():
         '-c', '--config', help='Config file', required=True)
     parser.add_argument(
         '-s', '--state', help='State file')
+    parser.add_argument(
+        '-d', '--discover', action='store_true', help='Discover schemas')
 
     args = parser.parse_args()
 
@@ -86,13 +95,16 @@ def main():
         logger.fatal("Missing required configuration keys: {}".format(missing_keys))
         exit(1)
 
-    state = {}
-    if args.state:
-        with open(args.state, 'r') as file:
-            for line in file:
-                state = json.loads(line.strip())
+    if args.discover:
+        do_discover()
+    else:
+        state = {}
+        if args.state:
+            with open(args.state, 'r') as file:
+                for line in file:
+                    state = json.loads(line.strip())
 
-    do_sync(config, state)
+        do_sync(config, state)
 
 if __name__ == '__main__':
     main()
