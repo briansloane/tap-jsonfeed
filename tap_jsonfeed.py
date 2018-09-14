@@ -38,7 +38,7 @@ def load_schemas():
     return schemas
 
 def get_feed(feed_url, state):
-    with singer.stats.Counter(source='commits') as stats:
+    with singer.stats.Counter(source='posts') as stats:
         for response in authed_get_all_pages('feed', feed_url):
             feed = response.json()
 
@@ -54,9 +54,9 @@ def do_sync(config, state):
     schemas = load_schemas()
 
     if state:
-        logger.info('Replicating commits since %s from %s', state, feed_url)
+        logger.info('Replicating posts since %s from %s', state, feed_url)
     else:
-        logger.info('Replicating all commits from %s', feed_url)
+        logger.info('Replicating all posts from %s', feed_url)
 
 
     singer.write_schema('feed', schemas['feed'], 'id')
