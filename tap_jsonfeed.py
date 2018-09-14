@@ -3,6 +3,7 @@ import requests
 import singer
 import json
 import os
+import sys
 import singer.stats
 
 session = requests.Session()
