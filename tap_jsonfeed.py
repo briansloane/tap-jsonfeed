@@ -82,8 +82,8 @@ def main():
     parser.add_argument(
         '-d', '--discover', action='store_true', help='Discover schemas')
 
-    args = parser.parse_args()
-
+    args, _ = parser.parse_known_args()
+    
     with open(args.config) as config_file:
         config = json.load(config_file)
 
